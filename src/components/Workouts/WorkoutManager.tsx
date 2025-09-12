@@ -106,7 +106,7 @@ export function WorkoutManager() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-600"></div>
       </div>
     );
   }
@@ -115,12 +115,12 @@ export function WorkoutManager() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Workouts</h1>
-          <p className="text-gray-600 mt-1">Log and manage your fitness activities</p>
+          <h1 className="text-3xl font-semibold text-slate-900">Workouts</h1>
+          <p className="text-slate-600 mt-1">Log and manage your fitness activities</p>
         </div>
         <button
           onClick={() => setShowForm(true)}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors"
         >
           <Plus className="h-5 w-5 mr-2" />
           Add Workout

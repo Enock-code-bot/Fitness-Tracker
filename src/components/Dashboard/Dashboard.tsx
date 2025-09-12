@@ -8,6 +8,8 @@ import { GoalProgress } from './GoalProgress';
 import WaterTracker from './WaterTracker';
 import StepTracker from './StepTracker';
 import Leaderboard from './Leaderboard';
+import { AIChatbot } from './AIChatbot';
+import { PremiumFeature } from '../PremiumFeature';
 import { Activity, Target, Clock, Flame } from 'lucide-react';
 
 interface DashboardData {
@@ -38,6 +40,7 @@ export function Dashboard() {
   const { user } = useAuth();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showChatbot, setShowChatbot] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -132,14 +135,14 @@ export function Dashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-600"></div>
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="text-center text-gray-500">
+      <div className="text-center text-slate-500">
         Failed to load dashboard data. Please try again.
       </div>
     );
@@ -148,8 +151,8 @@ export function Dashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-1">Track your fitness progress and achievements</p>
+        <h1 className="text-3xl font-semibold text-slate-900">Dashboard</h1>
+        <p className="text-slate-600 mt-1">Track your fitness progress and achievements</p>
       </div>
 
       {/* Stats Cards */}
@@ -191,22 +194,24 @@ export function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Weekly Chart */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Weekly Overview</h2>
-          <WeeklyChart data={data.weeklyData} />
-        </div>
+        {/* Weekly Chart - Basic Premium Feature */}
+        <PremiumFeature requiredTier="basic" featureName="Advanced Analytics">
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold text-slate-900 mb-4">Weekly Overview</h2>
+            <WeeklyChart data={data.weeklyData} />
+          </div>
+        </PremiumFeature>
 
         {/* Goal Progress */}
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Goal Progress</h2>
+          <h2 className="text-xl font-semibold text-slate-900 mb-4">Goal Progress</h2>
           <GoalProgress goals={data.activeGoals} />
         </div>
       </div>
 
       {/* Recent Workouts */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Workouts</h2>
+        <h2 className="text-xl font-semibold text-slate-900 mb-4">Recent Workouts</h2>
         <RecentWorkouts workouts={data.recentWorkouts} />
       </div>
 
@@ -214,24 +219,24 @@ export function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <Leaderboard />
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+          <h2 className="text-xl font-semibold text-slate-900 mb-4">Quick Actions</h2>
           <div className="space-y-3" role="group" aria-label="Quick fitness actions">
             <button
-              className="w-full bg-blue-500 text-white py-3 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 transition-colors"
+              className="w-full bg-slate-600 text-white py-3 px-4 rounded-md hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2 transition-colors"
               aria-label="Log a new workout session"
               type="button"
             >
               Log New Workout
             </button>
             <button
-              className="w-full bg-green-500 text-white py-3 px-4 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 focus:ring-offset-2 transition-colors"
+              className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300 focus:ring-offset-2 transition-colors"
               aria-label="Set a new fitness goal"
               type="button"
             >
               Set New Goal
             </button>
             <button
-              className="w-full bg-purple-500 text-white py-3 px-4 rounded-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-300 focus:ring-offset-2 transition-colors"
+              className="w-full bg-purple-600 text-white py-3 px-4 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-300 focus:ring-offset-2 transition-colors"
               aria-label="Browse workout templates"
               type="button"
             >
@@ -240,6 +245,20 @@ export function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* AI Chatbot - Elite Premium Feature */}
+      <PremiumFeature requiredTier="elite" featureName="AI Fitness Coach">
+        <div>
+          <button
+            onClick={() => setShowChatbot(!showChatbot)}
+            className="fixed bottom-8 right-8 bg-slate-600 text-white rounded-full p-4 shadow-lg hover:bg-slate-700 transition-colors"
+            aria-label="Toggle AI Chatbot"
+          >
+            Chat
+          </button>
+          {showChatbot && <AIChatbot isOpen={showChatbot} onToggle={() => setShowChatbot(false)} userName={user?.user_metadata?.full_name} />}
+        </div>
+      </PremiumFeature>
     </div>
   );
 }

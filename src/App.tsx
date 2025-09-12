@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { AuthForm } from './components/Auth/AuthForm';
 import { Layout } from './components/Layout';
@@ -9,10 +9,13 @@ import WaterTracker from './components/Dashboard/WaterTracker';
 import StepTracker from './components/Dashboard/StepTracker';
 import WorkoutTemplates from './components/Workouts/WorkoutTemplates';
 import Leaderboard from './components/Dashboard/Leaderboard';
+import { AIChatbot } from './components/Dashboard/AIChatbot';
+import { Pricing } from './components/Pricing';
 
 function AppContent() {
   const { user, loading } = useAuth();
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'workouts' | 'goals' | 'profile' | 'water' | 'steps' | 'templates' | 'leaderboard'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'workouts' | 'goals' | 'water' | 'steps' | 'templates' | 'leaderboard' | 'pricing'>('dashboard');
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   if (loading) {
     return (
@@ -37,28 +40,6 @@ function AppContent() {
         return <WorkoutManager />;
       case 'goals':
         return <GoalManager />;
-      case 'profile':
-        return (
-          <div className="bg-white rounded-lg shadow p-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Profile</h1>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Email</label>
-                <p className="mt-1 text-sm text-gray-900">{user.email}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Full Name</label>
-                <p className="mt-1 text-sm text-gray-900">{user.user_metadata?.full_name || 'Not set'}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Member Since</label>
-                <p className="mt-1 text-sm text-gray-900">
-                  {new Date(user.created_at).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
-          </div>
-        );
       case 'water':
         return <WaterTracker />;
       case 'steps':
@@ -67,15 +48,35 @@ function AppContent() {
         return <WorkoutTemplates />;
       case 'leaderboard':
         return <Leaderboard />;
+      case 'pricing':
+        return <Pricing />;
       default:
         return <Dashboard />;
     }
   };
 
   return (
-    <Layout activeTab={activeTab} onTabChange={setActiveTab}>
-      {renderContent()}
-    </Layout>
+    <>
+      <Layout activeTab={activeTab} onTabChange={setActiveTab}>
+        {renderContent()}
+      </Layout>
+      {user && (
+        <AIChatbot
+          isOpen={isChatbotOpen}
+          onToggle={() => setIsChatbotOpen(!isChatbotOpen)}
+          userName={user.user_metadata?.full_name}
+        />
+      )}
+      {user && !isChatbotOpen && (
+        <button
+          onClick={() => setIsChatbotOpen(true)}
+          className="fixed bottom-6 right-6 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          aria-label="Open AI Chatbot"
+        >
+          💬
+        </button>
+      )}
+    </>
   );
 }
 

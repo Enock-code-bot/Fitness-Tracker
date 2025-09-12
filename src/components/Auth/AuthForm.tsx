@@ -60,16 +60,16 @@ export function AuthForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="flex justify-center">
             <Activity className="h-12 w-12 text-white" />
           </div>
-          <h2 className="mt-6 text-3xl font-extrabold text-white">
+          <h2 className="mt-6 text-3xl font-semibold text-white">
             {isSignUp ? 'Create your account' : 'Sign in to your account'}
           </h2>
-          <p className="mt-2 text-sm text-blue-100">
+          <p className="mt-2 text-sm text-slate-200">
             {isSignUp ? 'Start your fitness journey today' : 'Welcome back to FitTracker'}
           </p>
         </div>
@@ -100,14 +100,14 @@ export function AuthForm() {
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="mt-1 appearance-none relative block w-full px-3 py-3 border border-gray-300 rounded-lg placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  className="mt-1 appearance-none relative block w-full px-3 py-3 border border-slate-300 rounded-lg placeholder-slate-500 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500 focus:z-10 sm:text-sm"
                   placeholder="Enter your full name"
                 />
               </div>
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-sm font-medium text-slate-700">
                 Email address
               </label>
               <input
@@ -118,13 +118,13 @@ export function AuthForm() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 appearance-none relative block w-full px-3 py-3 border border-gray-300 rounded-lg placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                className="mt-1 appearance-none relative block w-full px-3 py-3 border border-slate-300 rounded-lg placeholder-slate-500 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500 focus:z-10 sm:text-sm"
                 placeholder="Enter your email address"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="block text-sm font-medium text-slate-700">
                 Password
               </label>
               <div className="mt-1 relative">
@@ -136,7 +136,7 @@ export function AuthForm() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none relative block w-full px-3 py-3 pr-10 border border-gray-300 rounded-lg placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  className="appearance-none relative block w-full px-3 py-3 pr-10 border border-slate-300 rounded-lg placeholder-slate-500 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500 focus:z-10 sm:text-sm"
                   placeholder="Enter your password"
                 />
                 <button
@@ -157,7 +157,7 @@ export function AuthForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-slate-600 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {loading ? 'Loading...' : (isSignUp ? 'Sign up' : 'Sign in')}
               </button>
@@ -167,10 +167,10 @@ export function AuthForm() {
               <>
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300" />
+                    <div className="w-full border-t border-slate-300" />
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                    <span className="px-2 bg-white text-slate-500">Or continue with</span>
                   </div>
                 </div>
 
@@ -179,7 +179,7 @@ export function AuthForm() {
                     type="button"
                     onClick={handleGoogleSignIn}
                     disabled={loading}
-                    className="group relative w-full flex justify-center py-3 px-4 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="group relative w-full flex justify-center py-3 px-4 border border-slate-300 text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -197,9 +197,9 @@ export function AuthForm() {
               <button
                 type="button"
                 onClick={() => setIsSignUp(!isSignUp)}
-                className="text-sm text-blue-600 hover:text-blue-500"
+                className="text-sm text-slate-600 hover:text-slate-500"
               >
-                {isSignUp 
+                {isSignUp
                   ? 'Already have an account? Sign in'
                   : "Don't have an account? Sign up"
                 }

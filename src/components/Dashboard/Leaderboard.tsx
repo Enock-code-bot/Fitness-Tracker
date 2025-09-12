@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import { Trophy, Medal, Award } from 'lucide-react';
@@ -19,11 +19,7 @@ const Leaderboard: React.FC = () => {
   const [timeframe, setTimeframe] = useState<'week' | 'month' | 'all'>('week');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchLeaderboard();
-  }, [timeframe]);
-
-  const fetchLeaderboard = async () => {
+  const fetchLeaderboard = useCallback(async () => {
     setLoading(true);
 
     try {
@@ -113,7 +109,11 @@ const Leaderboard: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [timeframe]);
+
+  useEffect(() => {
+    fetchLeaderboard();
+  }, [fetchLeaderboard]);
 
   const getRankIcon = (index: number) => {
     switch (index) {

@@ -5,6 +5,8 @@ import { supabase } from '../lib/supabase';
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  subscription: string | null; // new field for subscription tier
+  updateSubscription: (newSub: string) => void;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: unknown }>;
   signIn: (email: string, password: string) => Promise<{ error: unknown }>;
   signInWithGoogle: () => Promise<{ error: unknown }>;
@@ -23,18 +25,33 @@ export function useAuth() {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [subscription, setSubscription] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        // Fetch subscription info from profiles table
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('subscription')
+          .eq('id', session.user.id)
+          .single();
+        if (error) {
+          console.error('Error fetching subscription:', error);
+          setSubscription(null);
+        } else {
+          setSubscription(data?.subscription || null);
+        }
+      }
       setLoading(false);
     });
 
     // Listen for auth changes
     const {
-      data: { subscription },
+      data: { subscription: authSubscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       setUser(session?.user ?? null);
       
@@ -50,12 +67,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (error) {
           console.error('Error creating profile:', error);
         }
+        // Fetch subscription info on sign in
+        const { data, error: subError } = await supabase
+          .from('profiles')
+          .select('subscription')
+          .eq('id', session.user.id)
+          .single();
+        if (subError) {
+          console.error('Error fetching subscription:', subError);
+          setSubscription(null);
+        } else {
+          setSubscription(data?.subscription || null);
+        }
+      } else if (event === 'SIGNED_OUT') {
+        setSubscription(null);
       }
       
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => authSubscription.unsubscribe();
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string) => {
@@ -101,13 +132,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { error };
   };
 
+  const updateSubscription = (newSub: string) => {
+    setSubscription(newSub);
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
   };
 
   const value = {
     user,
+    subscription,
     loading,
+    updateSubscription,
     signUp,
     signIn,
     signInWithGoogle,

@@ -40,6 +40,61 @@ const WorkoutTemplates: React.FC = () => {
     fetchTemplates();
   }, [user]);
 
+  // Sample templates for demo purposes
+  const sampleTemplates: WorkoutTemplate[] = [
+    {
+      id: 'sample-1',
+      name: 'Morning Cardio Blast',
+      category_id: 'cardio',
+      description: 'Quick 20-minute cardio session to start your day',
+      exercises: [
+        { name: 'Jumping Jacks', sets: 3, reps: 30 },
+        { name: 'High Knees', sets: 3, duration: 60 },
+        { name: 'Burpees', sets: 3, reps: 10 }
+      ],
+      estimated_duration: 20,
+      estimated_calories: 150,
+      difficulty: 'beginner',
+      is_public: true
+    },
+    {
+      id: 'sample-2',
+      name: 'Upper Body Strength',
+      category_id: 'strength',
+      description: 'Focus on building upper body strength',
+      exercises: [
+        { name: 'Push-ups', sets: 4, reps: 12 },
+        { name: 'Dumbbell Rows', sets: 4, reps: 10 },
+        { name: 'Shoulder Press', sets: 4, reps: 8 }
+      ],
+      estimated_duration: 45,
+      estimated_calories: 200,
+      difficulty: 'intermediate',
+      is_public: true
+    },
+    {
+      id: 'sample-3',
+      name: 'Evening Yoga Flow',
+      category_id: 'flexibility',
+      description: 'Relaxing yoga sequence for better flexibility',
+      exercises: [
+        { name: 'Sun Salutation', sets: 5 },
+        { name: 'Warrior Pose', sets: 3, duration: 30 },
+        { name: 'Childs Pose', sets: 3, duration: 60 }
+      ],
+      estimated_duration: 30,
+      estimated_calories: 100,
+      difficulty: 'beginner',
+      is_public: true
+    }
+  ];
+
+  const sampleCategories: WorkoutCategory[] = [
+    { id: 'cardio', name: 'Cardio', description: 'Heart-pumping exercises', icon: '🏃', color: '#FF6B6B' },
+    { id: 'strength', name: 'Strength', description: 'Weight training exercises', icon: '💪', color: '#4ECDC4' },
+    { id: 'flexibility', name: 'Flexibility', description: 'Yoga and stretching', icon: '🧘', color: '#45B7D1' }
+  ];
+
   const fetchCategories = async () => {
     const { data, error } = await supabase
       .from('workout_categories')
@@ -48,8 +103,9 @@ const WorkoutTemplates: React.FC = () => {
 
     if (error) {
       console.error('Error fetching categories:', error);
+      setCategories(sampleCategories);
     } else {
-      setCategories(data || []);
+      setCategories(data && data.length > 0 ? data : sampleCategories);
     }
   };
 
@@ -77,8 +133,22 @@ const WorkoutTemplates: React.FC = () => {
 
     if (error) {
       console.error('Error fetching templates:', error);
+      // Use sample templates if DB fetch fails
+      const filteredSamples = selectedCategory === 'all'
+        ? sampleTemplates
+        : sampleTemplates.filter(t => t.category_id === selectedCategory);
+      setTemplates(filteredSamples);
     } else {
-      setTemplates(data || []);
+      // Use DB data if available, otherwise use samples
+      const dbTemplates = data || [];
+      if (dbTemplates.length === 0) {
+        const filteredSamples = selectedCategory === 'all'
+          ? sampleTemplates
+          : sampleTemplates.filter(t => t.category_id === selectedCategory);
+        setTemplates(filteredSamples);
+      } else {
+        setTemplates(dbTemplates);
+      }
     }
   };
 
@@ -132,16 +202,19 @@ const WorkoutTemplates: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Workout Templates</h2>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">
+        <button
+          onClick={() => alert('Create Template feature coming soon!')}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
+        >
           Create Template
         </button>
       </div>
 
       {/* Category Filter */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-hide">
         <button
           onClick={() => setSelectedCategory('all')}
-          className={`px-4 py-2 rounded-md transition-colors ${
+          className={`px-4 py-2 rounded-md transition-colors whitespace-nowrap flex-shrink-0 ${
             selectedCategory === 'all'
               ? 'bg-blue-500 text-white'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -153,7 +226,7 @@ const WorkoutTemplates: React.FC = () => {
           <button
             key={category.id}
             onClick={() => setSelectedCategory(category.id)}
-            className={`px-4 py-2 rounded-md transition-colors ${
+            className={`px-4 py-2 rounded-md transition-colors whitespace-nowrap flex-shrink-0 ${
               selectedCategory === category.id
                 ? 'bg-blue-500 text-white'
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
